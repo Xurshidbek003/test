@@ -5,7 +5,11 @@ from utils.pagination import pagination
 from models.questions import Questions
 
 
-def get_answers(ident, search, page, limit, db):
+def get_answers(question_id, ident, search, page, limit, db):
+    if question_id > 0:
+        question_id_filter = Answers.question_id == question_id
+    else:
+        question_id_filter = Answers.id > 0
 
     if ident > 0:
         ident_filter = Answers.id == ident
@@ -19,7 +23,7 @@ def get_answers(ident, search, page, limit, db):
         search_filter = Questions.id > 0
 
     items = (db.query(Answers).options(joinedload(Answers.question))
-             .filter(ident_filter, search_filter).order_by(Answers.id.desc()))
+             .filter(question_id_filter, ident_filter, search_filter).order_by(Answers.id.desc()))
 
     return pagination(items, page, limit)
 
@@ -49,5 +53,3 @@ def delete_answer(ident, db):
     get_in_db(db, Answers, ident)
     db.query(Answers).filter(Answers.id == ident).delete()
     db.commit()
-
-

@@ -18,11 +18,11 @@ answers_router = APIRouter(
 
 
 @answers_router.get('/get')
-def get_answer(ident: int = 0, search: str = None,  page: int = 1,
+def get_answer(question_id: int = 0, ident: int = 0, search: str = None,  page: int = 1,
                limit: int = 25, db: Session = Depends(database),
                current_user: CreateUser = Depends(get_current_active_user)):
     role_verification(current_user, inspect.currentframe().f_code.co_name)
-    return get_answers(ident, search, page, limit, db)
+    return get_answers(question_id, ident, search, page, limit, db)
 
 
 @answers_router.post('/create')
